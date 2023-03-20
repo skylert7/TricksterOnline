@@ -1,0 +1,118 @@
+192
+98
+22:08:48.220: Process 24676 is being debugged
+22:09:57.112: Picking up one Aposis Card: 1 number
+22:09:58.677: Picking up one Aposis Card: 1 number
+22:10:00.248: Picking up one Aposis Card: 1 number
+22:10:01.818: Picking up one Aposis Card: 1 number
+22:10:03.402: Picking up one Aposis Card: 1 number
+22:10:04.954: Picking up one Aposis Card: 1 number
+22:10:06.519: Picking up one Aposis Card: 1 number
+22:10:08.069: Picking up one Aposis Card: 1 number
+22:10:18.517: Picking up one Aposis Card: 1 number
+22:15:22.680: Picking up one Aposis Card: 1 number
+22:15:24.246: Picking up one Aposis Card: 1 number
+22:22:32.078: Picking up one Aposis Card: 1 number
+22:22:33.646: Picking up one Aposis Card: 1 number
+22:29:07.275: Picking up one Aposis Card: 1 number
+22:29:08.870: Picking up one Aposis Card: 1 number
+22:29:10.442: Picking up one Aposis Card: 1 number
+22:29:12.013: Picking up one Aposis Card: 1 number
+22:29:13.575: Picking up one Aposis Card: 1 number
+22:29:15.143: Picking up one Aposis Card: 1 number
+22:29:16.716: Picking up one Aposis Card: 1 number
+22:29:18.283: Picking up one Aposis Card: 1 number
+22:29:19.853: Picking up one Aposis Card: 1 number
+22:29:21.439: Picking up one Aposis Card: 1 number
+22:29:23.013: Picking up one Aposis Card: 1 number
+22:29:24.584: Picking up one Aposis Card: 1 number
+22:29:26.156: Picking up one Aposis Card: 1 number
+22:29:27.711: Picking up one Aposis Card: 1 number
+22:29:29.286: Picking up one Aposis Card: 1 number
+22:29:30.853: Picking up one Aposis Card: 1 number
+22:29:32.438: Picking up one Aposis Card: 1 number
+22:29:34.005: Picking up one Aposis Card: 1 number
+22:29:35.575: Picking up one Aposis Card: 1 number
+22:29:37.147: Picking up one Aposis Card: 1 number
+22:29:38.710: Picking up one Aposis Card: 1 number
+22:29:40.280: Picking up one Aposis Card: 1 number
+22:29:41.829: Picking up one Aposis Card: 1 number
+22:29:43.382: Picking up one Aposis Card: 1 number
+22:29:44.952: Picking up one Aposis Card: 1 number
+22:29:46.517: Picking up one Aposis Card: 1 number
+22:29:48.069: Picking up one Aposis Card: 1 number
+22:29:49.621: Picking up one Aposis Card: 1 number
+22:29:51.174: Picking up one Aposis Card: 1 number
+22:29:52.743: Picking up one Aposis Card: 1 number
+22:29:54.295: Picking up one Aposis Card: 1 number
+22:29:55.862: Picking up one Aposis Card: 1 number
+22:29:57.436: Picking up one Aposis Card: 1 number
+22:29:59.004: Picking up one Aposis Card: 1 number
+22:30:00.572: Picking up one Aposis Card: 1 number
+22:30:02.138: Picking up one Aposis Card: 1 number
+22:30:03.715: Picking up one Aposis Card: 1 number
+22:30:05.276: Picking up one Aposis Card: 1 number
+22:30:06.864: Picking up one Aposis Card: 1 number
+22:30:08.438: Picking up one Aposis Card: 1 number
+22:30:10.014: Picking up one Aposis Card: 1 number
+22:30:11.585: Picking up one Aposis Card: 1 number
+22:30:13.125: Picking up one Aposis Card: 1 number
+22:30:14.678: Picking up one Aposis Card: 1 number
+22:30:16.256: Picking up one Aposis Card: 1 number
+22:30:17.798: Picking up one Aposis Card: 1 number
+22:30:19.367: Picking up one Aposis Card: 1 number
+22:30:20.942: Picking up one Aposis Card: 1 number
+22:30:22.508: Picking up one Aposis Card: 1 number
+22:30:24.068: Picking up one Aposis Card: 1 number
+22:30:25.641: Picking up one Aposis Card: 1 number
+22:30:27.189: Picking up one Aposis Card: 1 number
+22:30:28.775: Picking up one Aposis Card: 1 number
+22:30:30.345: Picking up one Aposis Card: 1 number
+22:30:31.913: Picking up one Aposis Card: 1 number
+22:30:33.484: Picking up one Aposis Card: 1 number
+22:30:35.040: Picking up one Aposis Card: 1 number
+22:30:48.553: Picking up one Aposis Card: 1 number
+22:31:32.024: Picking up one Aposis Card: 1 number
+22:31:50.593: Picking up one Aposis Card: 1 number
+22:37:31.643: Picking up one Aposis Card: 1 number
+21:06:06.541: Process 11592 is being debugged
+21:06:57.467: Process 11592 is being debugged
+21:08:18.695: Process 11592 is being debugged
+21:09:29.537: Process 11592 is being debugged
+21:11:58.028: Process 11592 is being debugged
+21:12:11.344: Process 11592 is being debugged
+21:16:40.604: Process 11592 is being debugged
+21:17:20.813: Process 11592 is being debugged
+21:17:42.113: Process 11592 is being debugged
+21:18:02.448: Process 11592 is being debugged
+21:18:28.837: Process 11592 is being debugged
+21:24:56.971: Process 11592 is being debugged
+21:26:45.953: Process 11592 is being debugged
+21:31:37.769: Process 11592 is being debugged
+21:31:54.174: Process 11592 is being debugged
+21:33:04.135: Process 11592 is being debugged
+21:34:36.314: Process 11592 is being debugged
+21:36:16.286: Process 11592 is being debugged
+21:36:20.482: Picking up one Broken Artifact 3: 1 number
+21:36:22.061: Picking up one Broken Artifact 3: 1 number
+21:36:23.644: Picking up one Broken Artifact 3: 1 number
+21:36:59.571: Picking up one Broken Artifact 3: 1 number
+21:37:21.885: Picking up one Broken Artifact 3: 1 number
+21:37:23.442: Picking up one Broken Artifact 3: 1 number
+21:38:40.334: Picking up one Broken Artifact 3: 1 number
+21:39:37.026: Picking up one Broken Artifact 3: 1 number
+21:40:03.356: Picking up one Broken Artifact 3: 1 number
+21:41:04.944: Picking up one Broken Artifact 3: 1 number
+21:41:09.534: Picking up one Broken Artifact 3: 1 number
+21:41:11.086: Picking up one Broken Artifact 3: 1 number
+21:41:12.654: Picking up one Broken Artifact 3: 1 number
+21:41:14.206: Picking up one Broken Artifact 3: 1 number
+21:41:15.760: Picking up one Broken Artifact 3: 1 number
+21:42:18.563: Picking up one Broken Artifact 3: 1 number
+21:42:20.132: Picking up one Broken Artifact 3: 1 number
+21:42:41.589: Process 11592 is being debugged
+21:42:42.248: Picking up one Strong Bronze Shield
+21:43:24.851: Picking up one Old Bronze Shield
+21:43:31.514: Picking up one Old Bronze Shield
+21:43:33.069: Picking up one Old Bronze Shield
+21:45:58.866: Picking up one Strong Bronze Shield
