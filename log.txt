@@ -116,3 +116,10 @@
 21:43:31.514: Picking up one Old Bronze Shield
 21:43:33.069: Picking up one Old Bronze Shield
 21:45:58.866: Picking up one Strong Bronze Shield
+17:16:15.163: Process 11072 is being debugged
+17:16:38.519: Process 11072 is being debugged
+17:17:12.351: Process 11072 is being debugged
+17:19:53.927: Process 11072 is being debugged
+17:20:10.390: Process 11072 is being debugged
+17:21:07.506: Process 11072 is being debugged
+17:22:07.226: Process 11072 is being debugged

@@ -55,7 +55,6 @@ ITEM_NAME_TO_PICKUP = [
     'Aposis Card',
     'Mimic Card',
 
-
 ]
 
 CURSOR_COOR_CORNERS = [
@@ -186,8 +185,10 @@ CURRENT_MAP_BASE = GAME_BASE_ADDRESS + 0x009C2030
 CURRENT_MAP_MAX_X_OFFSET = [0xEC, 0x40, 0x94C, 0xC, 0xC74]
 CURRENT_MAP_MAX_Y_OFFSET = [0xEC, 0x40, 0x94C, 0xC, 0xC78]
 
-
 # -- END CURRENT MAP --
+
+PINK_POTION_A_BASE = GAME_BASE_ADDRESS + int(0x0008FEA0)
+PINK_POTION_A_OFFSET = [0x48, 0x14, 0x0, 0x7C]
 
 
 def calculate_angle(playerX, playerY, centerX=MAX_COR[0] / 2,
@@ -537,16 +538,32 @@ class Trickster_Bot():
 
         return map_info
 
+    def set_potionA_buy_amount_to_one(self):
+        # set potion A buy amount to one
+        mem.write_int(self.handle,
+                      self.address_adder(PINK_POTION_A_BASE,
+                                         PINK_POTION_A_OFFSET),
+                      1)
+
 
 trickster_bot = Trickster_Bot(game_handle_pymem)
 
 
 def mouse_click(hwnd_from_win32):
     lParam = win32api.MAKELONG(10, 11)
+    x, y = 100, 100
+
+    # Convert the coordinates to screen coordinates
+    screen_x, screen_y = win32gui.ClientToScreen(hwnd_from_win32, (x, y))
+
+    # Send a left mouse button down event
     win32api.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONDOWN,
-                         win32con.MK_LBUTTON, lParam)
-    # win32gui.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONUP, None, lParam)
-    win32api.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONUP, None, lParam)
+                         win32con.MK_LBUTTON,
+                         screen_y << 16 | screen_x)
+
+    # Send a left mouse button up event
+    win32api.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONUP, 0,
+                         screen_y << 16 | screen_x)
 
 
 def mouse_release(hwnd_from_win32):
@@ -1142,6 +1159,57 @@ def test5():
             print(address, '----', value)
 
 
+def test6():
+    print('----- Test 6 -----')
+
+    def winEnumHandler(myhwnd, ctx):
+        if win32gui.IsWindowVisible(myhwnd):
+            print(hex(myhwnd), win32gui.GetWindowText(myhwnd), end=' | ')
+
+    win32gui.EnumWindows(winEnumHandler, None)
+
+    # Get the handle of the window you want to send mouse events to
+    hwnd = win32gui.FindWindow(None,
+                               "LifeTO(EN) - Jewelia : Ruby Island [v03192023v3]")
+
+    count = 0
+    while True:
+        # Set pink potion to One
+
+        trickster_bot.set_potionA_buy_amount_to_one()
+
+        # Set cursor to 'Buy'
+        buy_pos = (424, 505)
+        trickster_bot.set_cursor(buy_pos[0], buy_pos[1])
+
+        count += 1
+        # Set the coordinates where you want to send the mouse event (in this example, x=100, y=100)
+
+        x, y = 100, 100
+
+        # Convert the coordinates to screen coordinates
+        screen_x, screen_y = win32gui.ClientToScreen(hwnd, (x, y))
+
+        # Send a left mouse button down event
+        current_cursor = trickster_bot.get_cursor_info()
+        if current_cursor['mouse_x_value'] != buy_pos[0] or \
+                current_cursor['mouse_y_value'] != buy_pos[1]:
+            continue
+
+        win32api.SendMessage(hwnd, win32con.WM_LBUTTONDOWN,
+                             win32con.MK_LBUTTON,
+                             screen_y << 16 | screen_x)
+
+        # Send a left mouse button up event
+        win32api.SendMessage(hwnd, win32con.WM_LBUTTONUP, 0,
+                             screen_y << 16 | screen_x)
+
+        if count % 100 == 0:
+            logging.info(f'Auto buy is running')
+            logging.info(f'Bought')
+        time.sleep(1)
+
+
 if __name__ == '__main__':
     # name = "Skyler"
     # queue = multiprocessing.Queue()
@@ -1154,19 +1222,21 @@ if __name__ == '__main__':
     #     sleep(4)
     #     pro.join()
 
-    global is_quit
-    is_quit = False
-    center = (trickster_bot.get_player_info()['player_x'],
-              trickster_bot.get_player_info()['player_y'])
-    while True:
-        try:
-            if not is_quit:
-                # all_item = trickster_bot.get_all_valid_item()
-                # print(all_item)
-                pickup_by_name('Broken Artifact 3: 1 number')
-                sleep(1)
-            else:
-                sys.exit(0)
-        except Exception as e:
-            print(e)
-            continue
+    # global is_quit
+    # is_quit = False
+    # center = (trickster_bot.get_player_info()['player_x'],
+    #           trickster_bot.get_player_info()['player_y'])
+    # while True:
+    #     try:
+    #         if not is_quit:
+    #             # all_item = trickster_bot.get_all_valid_item()
+    #             # print(all_item)
+    #             pickup_by_name('Broken Artifact 3: 1 number')
+    #             sleep(1)
+    #         else:
+    #             sys.exit(0)
+    #     except Exception as e:
+    #         print(e)
+    #         continue
+
+    test6()
