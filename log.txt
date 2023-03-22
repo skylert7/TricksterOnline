@@ -123,3 +123,110 @@
 17:20:10.390: Process 11072 is being debugged
 17:21:07.506: Process 11072 is being debugged
 17:22:07.226: Process 11072 is being debugged
+17:57:43.521: Process 11072 is being debugged
+17:58:51.273: Process 11072 is being debugged
+17:59:21.184: Process 11072 is being debugged
+04:26:07.361: Process 25700 is being debugged
+04:27:17.411: Process 25700 is being debugged
+04:27:29.121: Process 25700 is being debugged
+04:38:25.182: Process 25700 is being debugged
+04:38:41.418: Process 25700 is being debugged
+04:39:37.235: Process 25700 is being debugged
+04:42:43.205: Process 25700 is being debugged
+04:44:38.135: Process 25700 is being debugged
+04:46:26.291: Process 25700 is being debugged
+04:46:47.764: Process 25700 is being debugged
+04:47:20.625: Process 25700 is being debugged
+04:47:39.839: Process 25700 is being debugged
+04:48:56.415: Process 25700 is being debugged
+04:56:53.897: Process 25700 is being debugged
+04:57:07.675: Process 25700 is being debugged
+04:57:31.827: Process 25700 is being debugged
+04:58:23.711: Process 25700 is being debugged
+04:59:04.048: Process 25700 is being debugged
+05:00:28.758: Process 25700 is being debugged
+05:00:36.790: Process 25700 is being debugged
+05:46:32.273: Process 24516 is being debugged
+05:46:36.473: Process 24516 is being debugged
+07:12:18.375: Process 25644 is being debugged
+07:12:38.375: Process 25644 is being debugged
+07:13:14.069: Process 25644 is being debugged
+07:14:45.649: Process 25644 is being debugged
+07:15:34.750: Process 25644 is being debugged
+07:16:36.721: Process 25644 is being debugged
+07:16:50.504: Process 25644 is being debugged
+07:19:25.453: Process 25644 is being debugged
+07:19:53.543: Process 25644 is being debugged
+07:21:42.726: Process 25644 is being debugged
+07:25:54.785: Process 25644 is being debugged
+07:27:03.027: Process 25644 is being debugged
+07:27:07.837: Process 25644 is being debugged
+07:27:39.428: Process 25644 is being debugged
+07:28:49.908: Process 25644 is being debugged
+07:29:18.706: Process 25644 is being debugged
+07:29:52.733: Process 25644 is being debugged
+07:30:31.816: Process 25644 is being debugged
+07:30:58.397: Process 25644 is being debugged
+07:31:11.703: Process 25644 is being debugged
+07:33:25.848: Process 25644 is being debugged
+07:36:20.652: Process 25644 is being debugged
+07:36:45.918: Process 25644 is being debugged
+07:40:44.746: Process 25644 is being debugged
+07:41:26.696: Process 25644 is being debugged
+07:43:39.551: Process 25644 is being debugged
+07:44:25.577: Process 25644 is being debugged
+07:44:58.177: Picking up one Old Thorn Shield
+07:45:04.788: Picking up one Old Thorn Shield
+07:45:11.451: Picking up one Strong Thorn Shield
+07:48:30.409: Process 25644 is being debugged
+07:48:31.621: Picking up one Strong Thorn Shield
+07:49:15.639: Process 25644 is being debugged
+07:49:16.761: Picking up one Strong Thorn Shield
+07:49:36.274: Picking up one Strong Thorn Shield
+07:49:42.897: Picking up one Strong Thorn Shield
+07:50:02.088: Process 25644 is being debugged
+07:50:40.274: Process 25644 is being debugged
+07:50:43.479: Picking up one Strong Thorn Shield
+07:50:47.606: Picking up one Old Thorn Shield
+07:52:05.225: Process 25644 is being debugged
+07:59:05.729: Process 25644 is being debugged
+08:00:07.178: Process 25644 is being debugged
+08:01:27.615: Process 25644 is being debugged
+08:03:57.556: Process 25644 is being debugged
+08:06:54.539: Process 25644 is being debugged
+08:18:29.983: Process 25644 is being debugged
+08:18:54.476: Picking up one Mimic Card: 1 number
+08:19:48.026: Process 25644 is being debugged
+08:25:21.140: Picking up one Aposis Card: 1 number
+08:29:51.683: Picking up one Aposis Card: 1 number
+08:31:28.449: Picking up one Aposis Card: 1 number
+10:03:57.760: Process 25644 is being debugged
+10:07:06.574: Picking up one Mimic Card: 1 number
+10:07:09.760: Picking up one Mimic Card: 1 number
+10:07:13.486: Picking up one Mimic Card: 1 number
+10:07:16.660: Picking up one Mimic Card: 1 number
+10:07:20.403: Picking up one Mimic Card: 1 number
+10:07:23.590: Picking up one Mimic Card: 1 number
+10:07:44.149: Picking up one Mimic Card: 1 number
+10:07:50.415: Picking up one Mimic Card: 1 number
+10:07:53.630: Picking up one Mimic Card: 1 number
+10:07:58.787: Picking up one Mimic Card: 1 number
+10:09:19.865: Picking up one Aposis Card: 1 number
+10:09:23.043: Picking up one Aposis Card: 1 number
+10:14:49.906: Picking up one Aposis Card: 1 number
+10:38:44.627: Process 25644 is being debugged
+10:53:31.114: Picking up one Aposis Card: 1 number
+11:06:41.522: Process 25644 is being debugged
+11:08:08.670: Process 25644 is being debugged
+11:10:39.603: Process 25644 is being debugged
+11:11:14.457: Process 25644 is being debugged
+11:11:34.866: Process 25644 is being debugged
+11:11:58.056: Process 25644 is being debugged
+11:12:13.074: Process 25644 is being debugged
+11:12:22.929: Process 25644 is being debugged
+11:12:44.306: Process 25644 is being debugged
+11:13:11.314: Process 25644 is being debugged
+11:13:37.764: Process 25644 is being debugged
+11:14:32.815: Process 25644 is being debugged
+11:15:33.777: Process 25644 is being debugged
+11:24:31.063: Process 25644 is being debugged

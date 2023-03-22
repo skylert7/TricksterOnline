@@ -2,6 +2,7 @@ from getbaseaddr import *
 import time
 from scipy.optimize import fsolve
 import logging
+from itertools import product
 
 logging.basicConfig(level=logging.INFO,
                     filename='log.txt',
@@ -118,4 +119,13 @@ def SendMessage_win32():
 # test_ctypes()
 # set_game_cursor(100, 100)
 # to_bot = Trickster_Bot()
-    return
+
+# 0x00A94B0C - general npc
+# Buy/Sell button = (x1, y1) = (x0 - 120, y0)
+# Use | Equip | Drill | Pet | Card | Etc =
+# [x0 - 320, Use
+# x0 - 280, Equip
+# x0 - 250, Drill
+# x0 - 220, Pet
+# x0 - 190, Card
+# x0 - 160, Etc] , y0 - 371

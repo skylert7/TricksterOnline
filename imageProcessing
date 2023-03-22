@@ -1,0 +1,135 @@
+from PIL import Image, ImageFilter, ImageGrab
+import win32gui
+import cv2
+import numpy as np
+import queue
+import time
+
+
+def update_screen():
+    hwndMain = win32gui.FindWindow('xmflrtmxj', None)
+    window_rect = win32gui.GetWindowRect(hwndMain)
+    win32gui.SetForegroundWindow(hwndMain)
+
+    print(window_rect)
+
+    time.sleep(1)
+    screenshot = np.array(ImageGrab.grab(bbox=window_rect))
+
+    screenshot = np.array(screenshot)
+    screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
+
+    # cv2.imshow("Computer Vision", screenshot)
+    cv2.imwrite('screenshot.jpg', screenshot)
+
+    img = cv2.imread('screenshot.jpg')
+    print(img.shape)  # Print image shape
+
+    # Cropping an image
+    cropped_image = img[40:180, 888:1024]
+
+    # Display cropped image
+    cv2.imshow("cropped", cropped_image)
+
+    # Save the cropped image
+    cv2.imwrite("minimap.jpg", cropped_image)
+
+    cv2.waitKey(0)
+
+
+def bfs(img, start, end):
+    q = queue.Queue()
+    q.put(start)
+    visited = set()
+    visited.add(start)
+    while not q.empty():
+        curr = q.get()
+        if curr == end:
+            return True
+        x, y = curr
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if dx == dy == 0:
+                    continue
+                nx, ny = x + dx, y + dy
+                if nx < 0 or nx >= img.shape[0] or ny < 0 or ny >= img.shape[
+                    1]:
+                    continue
+                if (img[nx][ny] == 255).any() and (nx, ny) not in visited:
+                    visited.add((nx, ny))
+                    q.put((nx, ny))
+    return False
+
+
+def find_shortest_path(img):
+    start = None
+    end = None
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            if img[i][j][0] == 255 and img[i][j][1] == 255 and img[i][j][
+                2] == 255:
+                if start is None:
+                    start = (i, j)
+                else:
+                    end = (i, j)
+                    break
+        if end is not None:
+            break
+
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    q = queue.Queue()
+    q.put(start)
+    visited = set()
+    visited.add(start)
+    parent = {}
+    while not q.empty():
+        curr = q.get()
+        if curr == end:
+            break
+        x, y = curr
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if dx == dy == 0:
+                    continue
+                nx, ny = x + dx, y + dy
+                if nx < 0 or nx >= gray_img.shape[0] or ny < 0 or ny >= \
+                        gray_img.shape[1]:
+                    continue
+                if gray_img[nx][ny] == 255 and (nx, ny) not in visited:
+                    visited.add((nx, ny))
+                    parent[(nx, ny)] = curr
+                    q.put((nx, ny))
+
+    path = []
+    curr = end
+    while curr != start:
+        path.append(curr)
+        curr = parent[curr]
+    path.append(start)
+    path.reverse()
+
+    # Visualize shortest path on image matrix using red color.
+    for i in range(len(path) - 1):
+        cv2.line(img=img,
+                 pt1=path[i],
+                 pt2=path[i + 1],
+                 color=(0, 0, 255),
+                 thickness=2)
+
+
+img_path = 'RelicsField4.jpg'
+img = cv2.imread(img_path)
+
+start = (10, 5)
+end = (60, 90)
+if bfs(img, start, end):
+    print("Shortest Path Found")
+    find_shortest_path(img)
+
+else:
+    print("Shortest Path Not Found")
+
+cv2.imshow('image', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

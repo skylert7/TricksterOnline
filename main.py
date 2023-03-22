@@ -3,16 +3,14 @@ import pymem
 import pymem.process
 import pymem.memory
 import pyautogui
-import pydirectinput
-from getbaseaddr import *
+import ctypes
 from time import sleep
 import random
 import numpy as np
-import threading
-import multiprocessing
 import os
 import sys
 
+from Trickster_Bot import *
 from helper import *
 
 process = pymem.process
@@ -21,174 +19,9 @@ PROCNAME = "Trickster.bin"
 
 DMC5 = pymem.Pymem(PROCNAME)
 game_handle_pymem = DMC5.process_handle
-GAME_BASE_ADDRESS = get_base_address()
 hwndMain = win32gui.FindWindow('xmflrtmxj', None)
-
-MAX_COR = (3960, 3960)  # or 4000 but 3960 for check
-
-SCREEN_RES = {
-    'x': 1024,
-    'y': 768
-}
-
-PLAYER_POS_ON_SCREEN_RES = [
-    SCREEN_RES['x'] // 2,
-    SCREEN_RES['y'] // 2
-]
-
-INSULT_WORDS = [
-    'Dull',
-    'Dumb',
-    'Foolish',
-    'Laughable',
-    'Ludicrous',
-]
-
-ITEM_NAME_TO_PICKUP = [
-    'Shield',
-    # 'Gun',
-    # 'Rod',
-    # 'Staff',
-    # 'Sword',
-    # 'Dagger',
-    # 'Broken Artifact 3: 1 number',
-    'Aposis Card',
-    'Mimic Card',
-
-]
-
-CURSOR_COOR_CORNERS = [
-    (800, 700),  # player at top left
-    (100, 700),  # player at top right
-    (100, 100),  # player at bottom right
-    (800, 100),  # player at bottom left
-]
-
-CURSOR_COOR_SIDES = [
-    (800, 350),  # player at left
-    (500, 700),  # player at top
-    (100, 350),  # player at right
-    (500, 100),  # player at bottom
-]
-
-random.choice(INSULT_WORDS)
-# FORMULAS
-# DEST_X = CUR_X + CURSOR_X - 504 (+-10) (based on screen resolution)
-# DEST_Y = CUR_Y + CURSOR_Y - 377 (+-10) (based on screen res)
-# for 3500 >= CUR_X, CUR_Y >= 500
-
-# ------- POINTER AND OFFSET -------
-
-# -- PLAYER'S STATS --
-# These addresses are of 2 byte type
-PLAYER_BASE_ADDRESS = GAME_BASE_ADDRESS + int(0x007B2E6C)
-PLAYER_BASE_ADDRESS_OFFSET = [0, 0]
-PLAYER_LEVEL_BASE_OFFSET = [0, 0x398]
-PLAYER_NAME_OFFSET = [0, 0x3C]
-PLAYER_X_OFFSET = [0, 0x6C]
-PLAYER_Y_OFFSET = [0, 0x6E]
-PLAYER_HP_OFFSET = [0, 0x1C4]
-PLAYER_MP_OFFSET = [0, 0x1C8]
-PLAYER_MAX_HP_OFFSET = [0, 0x1F0]
-PLAYER_MAX_MP_OFFSET = [0, 0x1D8]
-# -- END PLAYER'S STATS --
-
-
-# -- MONSTERS --
-MONSTER_BASE_ADDRESS = GAME_BASE_ADDRESS + int(0x007B5D1C)
-
-# All start address at 0 offset of monster
-# MONSTER_BASE_OFFSET = [[hex(i), 0] for i in range(0, 32, 4)]
-# MONSTER_BASE_OFFSET = [[hex(i), 0] for i in range(0, 32, 4)]
-MONSTER_BASE_OFFSET = [
-    [0x0, 0],
-    [0x4, 0],
-    [0x8, 0],
-    [0xc, 0],
-    [0x10, 0],
-    [0x14, 0],
-    [0x18, 0],
-    [0x1c, 0],
-    [0x20, 0],
-    [0x24, 0],
-]
-
-MONSTER_STATS_OFFSET = [
-    [0, 0],  # Monster's address / ID
-    [0, 0x6C],  # Monster's X coordinate
-    [0, 0x6E],  # Monster's Y coordinate
-    [0, 0x1C4],  # Monster's HP
-    [0, 0x60],  # Monster's check if real or not
-    [0, 0x3C],  # Monster's name in array of byte
-    # (can be hex, can be decimal and changed to text)
-]
-
-# -- END MONSTERS --
-# CURSOR_STATE_BASE = GAME_BASE_ADDRESS + int(0x0151B35C)
-# CURSOR_STATE_OFFSET = [0xDF0]
-
-CURSOR_STATE_BASE = GAME_BASE_ADDRESS + int(0x009B7484)
-# CURSOR_STATE_BASE = GAME_BASE_ADDRESS + int(0x0088A4D0)
-CURSOR_STATE_OFFSET = [0x4, 0x1F8]
-# CURSOR_STATE_OFFSET = [0x0, 0x1C, 0x48, 0x14, 0x2C4, 0x4, 0x164]
-
-
-TARGET_ID_BASE = GAME_BASE_ADDRESS + int(0x009B7484)
-# TARGET_ID_BASE = GAME_BASE_ADDRESS + int(0x009B7484)
-TARGET_ID_OFFSET = [0x4, 0x200]
-# TARGET_ID_OFFSET = [0x0, 0x1C, 0x48, 0x14, 0x2C4, 0x4, 0x200]
-
-MOUSE_X_BASE = GAME_BASE_ADDRESS + int(0x00994118)
-MOUSE_X_OFFSET = [4]
-
-MOUSE_Y_BASE = GAME_BASE_ADDRESS + int(0x00994118)
-MOUSE_Y_OFFSET = [8]
-
-# -- MONSTERS --
-ITEM_BASE_ADDRESS = GAME_BASE_ADDRESS + int(0x007B8768)
-
-# All start address at 0 offset of item
-ITEM_BASE_OFFSET = [
-    [0x0, 0],
-    [0x4, 0],
-    [0x8, 0],
-    [0xc, 0],
-    [0x10, 0],
-    [0x14, 0],
-    [0x18, 0],
-    [0x1c, 0],
-    [0x20, 0],
-    [0x24, 0],
-    [0x28, 0],
-    [0x2C, 0],
-    [0x30, 0],
-]
-
-ITEM_STATS_OFFSET = [
-    [0, 0],  # Item's address / ID
-    [0, 0x6C],  # Item's X coordinate
-    # 64536 is invalid
-    [0, 0x6E],  # Item's Y coordinate
-    # 64536 is invalid
-    [0, 0x60],  # Item's check if real or not
-    # //65527, 65524 Dead, 65532 or 66535 or 65524 or any thing else Alive - real
-    [0, 0x3C],  # Item's name in array of byte
-    # (can be hex, can be decimal and changed to text)
-    # //65527, 65524 Dead, 65532 or 66535 or any thing else Alive - real
-
-]
-
-# -- END ITEMS/DROPS --
-
-# -- CURRENT MAP --
-CURRENT_MAP_BASE = GAME_BASE_ADDRESS + 0x009C2030
-CURRENT_MAP_MAX_X_OFFSET = [0xEC, 0x40, 0x94C, 0xC, 0xC74]
-CURRENT_MAP_MAX_Y_OFFSET = [0xEC, 0x40, 0x94C, 0xC, 0xC78]
-
-# -- END CURRENT MAP --
-
-PINK_POTION_A_BASE = GAME_BASE_ADDRESS + int(0x0008FEA0)
-PINK_POTION_A_OFFSET = [0x48, 0x14, 0x0, 0x7C]
+# Get the handle of the window you want to send mouse events to
+hwndSendMouseEventsTo = win32gui.FindWindow(None, "LifeTO")
 
 
 def calculate_angle(playerX, playerY, centerX=MAX_COR[0] / 2,
@@ -204,365 +37,54 @@ def calculate_angle(playerX, playerY, centerX=MAX_COR[0] / 2,
     return angle
 
 
-class Trickster_Bot():
-    def __init__(self, game_handle):
-        self.handle = game_handle
-        self.player_info = self.get_player_info()
-        self.map_valid_monster = self.get_all_valid_monster()
-        self.cursor_info = self.get_cursor_info()
-        self.map_valid_item = self.get_all_valid_item()
-        # self.map_info = self.get_map_info()
-
-    def write_address(self):
-        valueX = 100
-        valueY = 10
-        while True:
-            if keyboard.is_pressed("space"):
-                '''
-                Parameters:	
-                handle (ctypes.wintypes.HANDLE) – A handle to the process memory to be modified. The handle must have PROCESS_VM_WRITE and PROCESS_VM_OPERATION access to the process.
-                address (int) – An address in the specified process to which data is written.
-                value (int) – The data to be written.
-                Returns:	
-                If the function succeeds, the return value is nonzero.
-                
-                Return type:	
-                bool
-                
-                Raise:	
-                TypeError if address is not a valid intege        r
-                
-                Raise:	
-                WinAPIError if WriteProcessMemory failed
-                '''
-                # X coor
-                status = mem.write_int(self.handle, 460425028, valueX)
-                print(status)
-                # Y coor
-                status = mem.write_int(self.handle, 460425032, valueY)
-                print(status)
-
-    def address_adder(self, base_address, offsets=[]):
-        pointer_add = base_address
-        tmp = pymem.memory.read_int(self.handle, base_address)
-        if offsets:
-            for offset in offsets:
-                pointer_add = tmp + offset
-                tmp = pymem.memory.read_int(self.handle, pointer_add)
-
-        return pointer_add
-
-    def get_player_info(self):
-        player_x = mem.read_short(self.handle,
-                                  self.address_adder(
-                                      PLAYER_BASE_ADDRESS,
-                                      offsets=PLAYER_X_OFFSET,
-                                  )
-                                  )
-
-        player_y = mem.read_short(self.handle,
-                                  self.address_adder(
-                                      PLAYER_BASE_ADDRESS,
-                                      offsets=PLAYER_Y_OFFSET,
-                                  )
-                                  )
-
-        player_hp = mem.read_short(self.handle,
-                                   self.address_adder(
-                                       PLAYER_BASE_ADDRESS,
-                                       offsets=PLAYER_HP_OFFSET,
-                                   )
-                                   )
-
-        player_mp = mem.read_short(self.handle,
-                                   self.address_adder(
-                                       PLAYER_BASE_ADDRESS,
-                                       offsets=PLAYER_MP_OFFSET,
-                                   )
-                                   )
-
-        player_max_hp = mem.read_short(self.handle,
-                                       self.address_adder(
-                                           PLAYER_BASE_ADDRESS,
-                                           offsets=PLAYER_MAX_HP_OFFSET,
-                                       )
-                                       )
-
-        player_max_mp = mem.read_short(self.handle,
-                                       self.address_adder(
-                                           PLAYER_BASE_ADDRESS,
-                                           offsets=PLAYER_MAX_MP_OFFSET,
-                                       )
-                                       )
-
-        player_name = mem.read_bytes(self.handle,
-                                     self.address_adder(
-                                         PLAYER_BASE_ADDRESS,
-                                         offsets=PLAYER_NAME_OFFSET),
-                                     byte=20
-                                     )
-        player_name = player_name.split(b'\x00')[0].decode("utf-8")
-
-        player_info = {
-            'player_x': player_x,
-            'player_y': player_y,
-            'player_hp': player_hp,
-            'player_mp': player_mp,
-            'player_max_hp': player_max_hp,
-            'player_max_mp': player_max_mp,
-            'player_name': player_name,
-        }
-
-        self.player_info = player_info
-
-        # print('PlayerX: ', player_x)
-        # print('PlayerY: ', player_y)
-        # print('Player HP: ', player_hp)
-        # print('Player MP: ', player_mp)
-        # print('Player MaxHP: ', player_max_hp)
-        # print('Player MaxMP: ', player_max_mp)
-        # print('Player Name: ', player_name)
-        # print('Cursor state: ', cursor_state)
-        # print('TargetID: ', hex(target_id))
-        # print('Mouse X is at: ', mouse_x_value)
-        # print('Mouse Y is at:', mouse_y_value)
-        # print('----------------------------------------------------')
-        return player_info
-
-    def get_cursor_info(self):
-        # cursor_state = mem.read_int(self.handle,
-        #                             self.address_adder(
-        #                                 CURSOR_STATE_BASE,
-        #                                 offsets=CURSOR_STATE_OFFSET))
-        cursor_state = mem.read_uint(self.handle,
-                                     self.address_adder(
-                                         CURSOR_STATE_BASE,
-                                         offsets=CURSOR_STATE_OFFSET)
-                                     )
-
-        target_id = mem.read_uint(self.handle,
-                                  self.address_adder(
-                                      TARGET_ID_BASE,
-                                      offsets=TARGET_ID_OFFSET)
-                                  )
-        # target_id = mem.read_int(self.handle, 0x0F200F70)
-
-        mouse_x_value = mem.read_uint(self.handle,
-                                      self.address_adder(
-                                          MOUSE_X_BASE,
-                                          offsets=MOUSE_X_OFFSET)
-                                      )
-
-        mouse_y_value = mem.read_uint(self.handle,
-                                      self.address_adder(
-                                          MOUSE_Y_BASE,
-                                          offsets=MOUSE_Y_OFFSET)
-                                      )
-        cursor_info = {
-            'cursor_state': cursor_state,
-            # 0 = MOVEABLE,
-            # 2 = ON GUI,
-            # 3 = ON WALL,
-            # 6 = ATTACK ON TARGET,
-            # 10 = ON PORTAL,
-            # 11 = ON NPC,
-            # 15 = CAST SPELL,
-            # 26 = CAST SPELL ON TARGET,
-            'target_id': target_id,
-            'mouse_x_value': mouse_x_value,
-            'cursor_x': mouse_x_value,
-            'mouse_y_value': mouse_y_value,
-            'cursor_y': mouse_y_value,
-
-        }
-        self.cursor_info = cursor_info
-        return cursor_info
-
-    def set_cursor(self, valueX, valueY):
-        # X coor
-        mem.write_int(self.handle,
-                      self.address_adder(MOUSE_X_BASE, MOUSE_X_OFFSET),
-                      valueX)
-        # Y coor
-        mem.write_int(self.handle,
-                      self.address_adder(MOUSE_Y_BASE, MOUSE_Y_OFFSET),
-                      valueY)
-
-    def move(self, cursor_to_move_X, cursor_to_move_Y):
-        self.set_cursor(cursor_to_move_X,
-                        cursor_to_move_Y)
-        print(
-            'Set cursor to ({},{})'.format(cursor_to_move_X, cursor_to_move_Y))
-        self.set_cursor(cursor_to_move_X,
-                        cursor_to_move_Y)
-        sleep(1)
-        mouse_click(hwndMain)
-        mouse_click(hwndMain)
-        sleep(4)
-        print('Done moving...')
-
-    def check_cursor_state(self, check_code):
-        cursor_state = self.get_cursor_info()['cursor_state']
-        if cursor_state == check_code:
-            return True
-        return False
-
-    def get_all_valid_monster(self):
-        map_monster_info = []
-        for mbo in MONSTER_BASE_OFFSET:
-            try:
-                monster_base_hex = self.address_adder(
-                    MONSTER_BASE_ADDRESS,
-                    offsets=mbo,
-                )
-            except Exception as e:
-                continue
-
-            for i in range(1, 16):
-                try:
-                    tmp_list = [monster_base_hex + mso[1] for mso in
-                                MONSTER_STATS_OFFSET]
-                    monster_x = mem.read_ushort(self.handle, tmp_list[1])
-                    monster_y = mem.read_ushort(self.handle, tmp_list[2])
-                    monster_hp = mem.read_ushort(self.handle, tmp_list[3])
-                    monster_check = mem.read_ushort(self.handle, tmp_list[4])
-                    monster_name = mem.read_bytes(self.handle, tmp_list[5],
-                                                  byte=20)
-                    monster_name = monster_name.split(b'\x00')[0].decode(
-                        "utf-8")
-                    if monster_name and \
-                            monster_x != 64536 and \
-                            monster_check != 65527 and \
-                            'Shadow' not in monster_name and \
-                            monster_hp > 0:
-                        valid_monster = {
-                            'monster_id': hex(monster_base_hex),
-                            'monster_x': monster_x,
-                            'monster_y': monster_y,
-                            'monster_hp': monster_hp,
-                            'monster_check': monster_check,
-                            'monster_name': monster_name
-                        }
-                        map_monster_info.append(valid_monster)
-                        # print('----------------------------------------------------')
-                        # print('Monster is at: ', hex(monster_base_hex))
-                        # print([hex(j) for j in tmp_list])
-                        # print('MonsterX: ', monster_x)
-                        # print('MonsterY: ', monster_y)
-                        # print('Monster HP: ', monster_hp)
-                        # print('Monster Check: ', monster_check)
-                        # print('Monster Name: ', monster_name)
-                    monster_base_hex = monster_base_hex + 0x604
-                except Exception as e:
-                    # print(e)
-                    continue
-        self.map_valid_monster = map_monster_info
-        return map_monster_info
-
-    def get_monster_info_from_address(self, monster_base):
-        tmp_list = [monster_base + i[1] for i in MONSTER_STATS_OFFSET]
-        monster_x = mem.read_ushort(self.handle, tmp_list[1])
-        monster_y = mem.read_ushort(self.handle, tmp_list[2])
-        monster_hp = mem.read_ushort(self.handle, tmp_list[3])
-        monster_check = mem.read_ushort(self.handle, tmp_list[4])
-        monster_name = mem.read_bytes(self.handle, tmp_list[5], byte=20)
-        monster_name = monster_name.split(b'\x00')[0].decode("utf-8")
-        monster_info = [monster_x,
-                        monster_y,
-                        monster_hp,
-                        monster_check,
-                        monster_name
-                        ]
-
-        return monster_info
-
-    def get_all_valid_item(self):
-        map_item_info = []
-        for ibo in ITEM_BASE_OFFSET:
-            try:
-                item_base_hex = self.address_adder(
-                    ITEM_BASE_ADDRESS,
-                    offsets=ibo,
-                )
-                # print(hex(item_base_hex))
-            except Exception as e:
-                continue
-
-            for i in range(1, 16):
-                try:
-                    tmp_list = [item_base_hex + iso[1] for iso in
-                                ITEM_STATS_OFFSET]
-                    item_x = mem.read_ushort(self.handle, tmp_list[1])
-                    item_y = mem.read_ushort(self.handle, tmp_list[2])
-                    item_check = mem.read_ushort(self.handle, tmp_list[3])
-                    item_name = mem.read_bytes(self.handle, tmp_list[4],
-                                               byte=30)
-                    item_name = item_name.split(b'\x00')[0].decode("utf-8")
-                    if item_check != 65524 and item_check != 65527:
-                        if item_name and item_x != 64536:
-                            valid_item = {
-                                'item_id': hex(item_base_hex),
-                                'item_x': item_x,
-                                'item_y': item_y,
-                                'item_check': item_check,
-                                'item_name': item_name
-                            }
-                            map_item_info.append(valid_item)
-                    item_base_hex = item_base_hex + 0x224
-                    # print(hex(item_base_hex))
-                except Exception as e:
-                    # print(e)
-                    continue
-        self.map_valid_item = map_item_info
-        return map_item_info
-
-    def get_map_info(self):
-
-        map_max_x_address = self.address_adder(CURRENT_MAP_BASE,
-                                               CURRENT_MAP_MAX_X_OFFSET)
-        map_max_y_address = self.address_adder(CURRENT_MAP_BASE,
-                                               CURRENT_MAP_MAX_Y_OFFSET)
-
-        max_x = mem.read_uint(self.handle, map_max_x_address)
-        max_y = mem.read_uint(self.handle, map_max_y_address)
-        # print('Map Max X', max_x)
-        # print('Map Max Y', max_y)
-
-        map_info = {
-            'map_max_x': max_x,
-            'map_max_y': max_y,
-            # 'map_max_x': ,
-        }
-
-        self.map_info = map_info
-
-        return map_info
-
-    def set_potionA_buy_amount_to_one(self):
-        # set potion A buy amount to one
-        mem.write_int(self.handle,
-                      self.address_adder(PINK_POTION_A_BASE,
-                                         PINK_POTION_A_OFFSET),
-                      1)
-
-
 trickster_bot = Trickster_Bot(game_handle_pymem)
 
 
-def mouse_click(hwnd_from_win32):
-    lParam = win32api.MAKELONG(10, 11)
+def mouse_click(hwndParam=''):
+    global hwndMain
     x, y = 100, 100
 
     # Convert the coordinates to screen coordinates
-    screen_x, screen_y = win32gui.ClientToScreen(hwnd_from_win32, (x, y))
+    screen_x, screen_y = win32gui.ClientToScreen(hwndMain, (x, y))
 
     # Send a left mouse button down event
-    win32api.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONDOWN,
+    win32api.SendMessage(hwndMain, win32con.WM_LBUTTONDOWN,
                          win32con.MK_LBUTTON,
                          screen_y << 16 | screen_x)
 
     # Send a left mouse button up event
-    win32api.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONUP, 0,
+    win32api.SendMessage(hwndMain, win32con.WM_LBUTTONUP, 0,
+                         screen_y << 16 | screen_x)
+
+
+def doubleClick(x=0, y=0):
+    global hwndMain
+    x, y = 100, 100
+
+    # Convert the coordinates to screen coordinates
+    screen_x, screen_y = win32gui.ClientToScreen(hwndMain, (x, y))
+
+    # According to MSDN documentation The correct order of messages you will see
+    # for double click event are -
+    # WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, and WM_LBUTTONUP
+
+    # WM_LBUTTONDOWN
+    win32api.SendMessage(hwndMain, win32con.WM_LBUTTONDOWN,
+                         win32con.MK_LBUTTON,
+                         screen_y << 16 | screen_x)
+
+    # WM_LBUTTONUP
+    win32api.SendMessage(hwndMain, win32con.WM_LBUTTONUP,
+                         win32con.MK_LBUTTON,
+                         screen_y << 16 | screen_x)
+
+    # WM_LBUTTONDBLCLK
+    win32api.SendMessage(hwndMain, win32con.WM_LBUTTONDBLCLK,
+                         win32con.MK_LBUTTON,
+                         screen_y << 16 | screen_x)
+
+    # Send a left mouse button up event
+    win32api.SendMessage(hwndMain, win32con.WM_LBUTTONUP, 0,
                          screen_y << 16 | screen_x)
 
 
@@ -586,10 +108,10 @@ def main_bak():
         player_info = trickster_bot.get_player_info()
         trickster_bot.get_all_valid_monster()
         playerX, playerY = player_info[0], player_info[1]
-        valid_player_X = list(range(math.floor(MAX_COR[0] * 20 / 100),
-                                    math.floor(MAX_COR[0] * 80 / 100)))
-        valid_player_Y = list(range(math.floor(MAX_COR[1] * 20 / 100),
-                                    math.floor(MAX_COR[1] * 80 / 100)))
+        valid_player_X = list(range(math.floor(MAX_COR[0] * 30 / 100),
+                                    math.floor(MAX_COR[0] * 70 / 100)))
+        valid_player_Y = list(range(math.floor(MAX_COR[1] * 30 / 100),
+                                    math.floor(MAX_COR[1] * 70 / 100)))
 
         valid_cursor_X = list(range(50, 800, 10))
         valid_cursor_Y = list(range(10, 700, 10))
@@ -664,38 +186,12 @@ def main_bak():
             #     player_max_mp,
             #     player_name,
             # ]
-
-            if int(player_info['player_mp']) < int(
-                    player_info['player_max_mp'] * 80 / 100):
-                drink_potion('num5')
-
             player_info = trickster_bot.get_player_info()
-            if int(player_info['player_mp']) < int(
-                    player_info['player_max_mp'] * 80 / 100):
-                drink_potion('num5')
 
-            if int(player_info['player_hp']) < int(
-                    player_info['player_max_hp'] * 80 / 100):
-                drink_potion('num6')
-
-            aoe_used = False
-            found_monster = False
-            use_skill('num1')
+            use_skill('1')
             for x in valid_cursor_X:
                 for y in valid_cursor_Y:
                     trickster_bot.set_cursor(x, y)
-                    # if trickster_bot.get_cursor_info()[0] == 26:
-                    #     mouse_click(hwndMain)
-                    #
-                    # if trickster_bot.get_cursor_info()[0] == 6:
-                    #     use_skill('num3')
-                    #     mouse_click(hwndMain)
-                    #     aoe_used = True
-                    #     found_monster = True
-                    #     time.sleep(6)
-                    #     use_skill('num1')
-                    #     for i in range(5):
-                    #         pickup()
 
                     if trickster_bot.get_cursor_info()['cursor_state'] == 10:
                         tmp = random.choice(CURSOR_COOR_SIDES)
@@ -706,13 +202,11 @@ def main_bak():
                         current_target = trickster_bot.get_cursor_info()[1]
                         monster_info = trickster_bot.get_monster_info_from_address(
                             current_target)
-                        if 'Punisher' in monster_info[-1]:
-                            continue
                         mouse_click(hwndMain)
                         print('Attacking' + ' ' +
                               random.choice(INSULT_WORDS) + ' ' +
                               monster_info[-1])
-                        sleep(3)
+                        sleep(2)
                         # trickster_bot.set_cursor(x, y)
                         # use_skill('num3')
                         # mouse_click(hwndMain)
@@ -754,27 +248,45 @@ def main_bak():
             print('Exception, moving on...')
 
 
-def main(center_param):
-    heal_mana('f5', 80)
-    heal_hp('f6', 80)
-    while pickup_by_name('Blue Potion A: 1 number'):
-        sleep(1)
-        continue
-
-    attack_aoe('f3')
-
-    radius = 500
-
-    attack('f1', center_param, radius)
-    attack('f1', center_param, radius)
-    attack('f1', center_param, radius)
-
-
-def attack(skill_slot, center, radius):
+def attack(skill_slot, centerparam, radius):
     print('Attack now')
     player_info = trickster_bot.get_player_info()
     all_monster = trickster_bot.get_all_valid_monster()
     monster_found = False
+    playerX, playerY = player_info['player_x'], player_info['player_y']
+    valid_player_X = list(range(math.floor(MAX_COR[0] * 30 / 100),
+                                math.floor(MAX_COR[0] * 70 / 100)))
+    valid_player_Y = list(range(math.floor(MAX_COR[1] * 30 / 100),
+                                math.floor(MAX_COR[1] * 70 / 100)))
+
+    # LEFT
+    if playerX < valid_player_X[0]:
+        print('At left, moving right')
+        cursor_to_move_X, cursor_to_move_Y = CURSOR_COOR_SIDES[0][0], \
+                                             CURSOR_COOR_SIDES[0][1]
+        trickster_bot.move(cursor_to_move_X, cursor_to_move_Y)
+
+    # TOP
+    if playerY < valid_player_Y[0]:
+        print('At top, moving down')
+        cursor_to_move_X, cursor_to_move_Y = CURSOR_COOR_SIDES[1][0], \
+                                             CURSOR_COOR_SIDES[1][1]
+        trickster_bot.move(cursor_to_move_X, cursor_to_move_Y)
+
+    # RIGHT
+    if playerX > valid_player_X[-1]:
+        print('At right, moving left')
+        cursor_to_move_X, cursor_to_move_Y = CURSOR_COOR_SIDES[2][0], \
+                                             CURSOR_COOR_SIDES[2][1]
+        trickster_bot.move(cursor_to_move_X, cursor_to_move_Y)
+
+    # BOTTOM
+    if playerY > valid_player_Y[-1]:
+        print('At bottom, moving up')
+        cursor_to_move_X, cursor_to_move_Y = CURSOR_COOR_SIDES[3][0], \
+                                             CURSOR_COOR_SIDES[3][1]
+        trickster_bot.move(cursor_to_move_X, cursor_to_move_Y)
+
     # valueX, valueY = 10, 10
     # all_monster = sorted(all_monster, key=lambda d: d['monster_x'])
     # print('---- attack ----')
@@ -788,8 +300,9 @@ def attack(skill_slot, center, radius):
 
     for i in range(len(all_monster)):
         # if all_monster[i]['monster_x'] in range(player_info['player_x'] - 500, player_info['player_x'] + 500):
-        if all_monster[i]['monster_x'] in range(center[0] -
-                                                radius, center[1] + radius):
+        if all_monster[i]['monster_x'] in range(centerparam[0] -
+                                                radius,
+                                                centerparam[1] + radius):
             visible_all_monster.append(all_monster[i])
 
     if near_all_monster:
@@ -808,8 +321,8 @@ def attack(skill_slot, center, radius):
         monster_y = all_monster[i]['monster_y']
         # print(all_monster[i])
         if (cursorX in range(50, 950)) and (cursorY in range(100, 700)):
-            print('Set cursor to ({},{})'.format(cursorX, cursorY))
             use_skill(skill_slot)
+            print('Set cursor to ({},{})'.format(cursorX, cursorY))
             trickster_bot.set_cursor(cursorX, cursorY)
             sleep(0.5)
             # print(trickster_bot.get_cursor_info())
@@ -988,6 +501,7 @@ def pickup_by_name(name='not_necessary'):
             sleep(0.5)
             if trickster_bot.check_cursor_state(4):
                 mouse_click(hwndMain)
+                # mouse_doucleclick(hwndMain)
                 logging.info('Picking up one' +
                              ' ' +
                              all_item[i]['item_name']
@@ -1008,8 +522,22 @@ def pickup():
 
 
 def use_skill(key):
-    pydirectinput.press(key)
-    sleep(0.5)
+    x0, y0 = trickster_bot.get_skill_slot_coord()
+    skill_slot_x = [x0, x0 + 32]
+    skill_slot_y = [y0 + i * 32 for i in range(4)]
+    skill_slot_coords = [(x, y) for y in skill_slot_y for x in skill_slot_x]
+    skill_slot_lookup = {}
+    for i in range(1, 9):
+        skill_slot_lookup[i] = skill_slot_coords[i - 1]
+        skill_slot_lookup[str(i)] = skill_slot_coords[i - 1]
+
+    trickster_bot.set_cursor(skill_slot_lookup[key][0],
+                             skill_slot_lookup[key][1])
+
+    print(f'Use skill {key}')
+    doubleClick(skill_slot_lookup[key][0], skill_slot_lookup[key][1])
+    doubleClick(skill_slot_lookup[key][0], skill_slot_lookup[key][1])
+    time.sleep(1)
 
 
 def drink_potion(key):
@@ -1159,7 +687,7 @@ def test5():
             print(address, '----', value)
 
 
-def test6():
+def test6_buy_pink_potionA_one_by_one():
     print('----- Test 6 -----')
 
     def winEnumHandler(myhwnd, ctx):
@@ -1168,10 +696,6 @@ def test6():
 
     win32gui.EnumWindows(winEnumHandler, None)
 
-    # Get the handle of the window you want to send mouse events to
-    hwnd = win32gui.FindWindow(None,
-                               "LifeTO(EN) - Jewelia : Ruby Island [v03192023v3]")
-
     count = 0
     while True:
         # Set pink potion to One
@@ -1179,30 +703,12 @@ def test6():
         trickster_bot.set_potionA_buy_amount_to_one()
 
         # Set cursor to 'Buy'
-        buy_pos = (424, 505)
+        buy_pos = (481, 548)
         trickster_bot.set_cursor(buy_pos[0], buy_pos[1])
 
         count += 1
-        # Set the coordinates where you want to send the mouse event (in this example, x=100, y=100)
 
-        x, y = 100, 100
-
-        # Convert the coordinates to screen coordinates
-        screen_x, screen_y = win32gui.ClientToScreen(hwnd, (x, y))
-
-        # Send a left mouse button down event
-        current_cursor = trickster_bot.get_cursor_info()
-        if current_cursor['mouse_x_value'] != buy_pos[0] or \
-                current_cursor['mouse_y_value'] != buy_pos[1]:
-            continue
-
-        win32api.SendMessage(hwnd, win32con.WM_LBUTTONDOWN,
-                             win32con.MK_LBUTTON,
-                             screen_y << 16 | screen_x)
-
-        # Send a left mouse button up event
-        win32api.SendMessage(hwnd, win32con.WM_LBUTTONUP, 0,
-                             screen_y << 16 | screen_x)
+        mouse_click()
 
         if count % 100 == 0:
             logging.info(f'Auto buy is running')
@@ -1210,33 +716,76 @@ def test6():
         time.sleep(1)
 
 
+def test7_sell5thingsinetc():
+    print('----- Test 7 -----')
+
+    number_of_items_etc_tab_before_selling = \
+        trickster_bot.get_number_of_items_in_inventory_tabs()
+
+    print(f'Number of items in Etc tab before selling:'
+          f' {number_of_items_etc_tab_before_selling}')
+
+    x0, y0 = trickster_bot.get_buy_sell_box_end_coord()
+    # Buy/Sell button = (x1, y1) = (x0 - 120, y0)
+    x_sell_buy, y_sell_buy = x0 - 120, y0
+
+    # Use | Equip | Drill | Pet | Card | Etc =
+    # [x0 - 320, Use
+    # x0 - 280, Equip
+    # x0 - 250, Drill
+    # x0 - 220, Pet
+    # x0 - 190, Card
+    # x0 - 160, Etc] , y0 - 371
+    tab_coords_x = [x0 - 320,
+                    x0 - 280,
+                    x0 - 250,
+                    x0 - 220,
+                    x0 - 190,
+                    x0 - 160]
+    tab_coords_y = y0 - 371
+
+    # Switch to etc tab
+    trickster_bot.set_cursor(tab_coords_x[-1], tab_coords_y)
+    mouse_click()
+    time.sleep(1)
+
+    # First item increment button x, y = x0 - 26, y0 - 316
+    x_increment_button, y_increment_button = x0 - 26, y0 - 316
+    number_of_items_etc_tab_after_selling = \
+        trickster_bot.get_number_of_items_in_inventory_tabs()
+    while number_of_items_etc_tab_after_selling > \
+            number_of_items_etc_tab_before_selling - 5:
+        trickster_bot.set_cursor(x_increment_button, y_increment_button)
+        mouse_click()
+        time.sleep(0.5)
+        trickster_bot.set_cursor(x_sell_buy, y_sell_buy)
+        mouse_click()
+        time.sleep(0.5)
+        number_of_items_etc_tab_after_selling = \
+            trickster_bot.get_number_of_items_in_inventory_tabs()
+    print(f'Number of items in Etc tab after selling is '
+          f'{number_of_items_etc_tab_after_selling}. Stopping auto....')
+
+
+def test8():
+    global hwndMain
+    print('----- Test 8 -----')
+    use_skill('1')
+
+
 if __name__ == '__main__':
-    # name = "Skyler"
-    # queue = multiprocessing.Queue()
-    #
-    # while True:
-    #     print("in main thread id(q) is {}".format(id(queue)))
-    #     pro = multiprocessing.Process(target=test, args=(queue, ))
-    #     pro.start()
-    #     print(queue.get())
-    #     sleep(4)
-    #     pro.join()
-
-    # global is_quit
-    # is_quit = False
-    # center = (trickster_bot.get_player_info()['player_x'],
-    #           trickster_bot.get_player_info()['player_y'])
-    # while True:
-    #     try:
-    #         if not is_quit:
-    #             # all_item = trickster_bot.get_all_valid_item()
-    #             # print(all_item)
-    #             pickup_by_name('Broken Artifact 3: 1 number')
-    #             sleep(1)
-    #         else:
-    #             sys.exit(0)
-    #     except Exception as e:
-    #         print(e)
-    #         continue
-
-    test6()
+    global is_quit
+    is_quit = False
+    center = (trickster_bot.get_player_info()['player_x'],
+              trickster_bot.get_player_info()['player_y'])
+    while True:
+        try:
+            if not is_quit:
+                attack(1, center, 400)
+                pickup_by_name('Aposis Card: 1 number')
+                sleep(1)
+            else:
+                sys.exit(0)
+        except Exception as e:
+            print(e)
+            continue
