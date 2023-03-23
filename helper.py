@@ -45,13 +45,6 @@ mon_dict = {
 MONSTER_INFO = [mon_dict]
 
 
-def press_key_board():
-    while True:
-        if keyboard.is_pressed("p"):
-            logging('You pressed p')
-            print("You pressed p")
-
-
 def attach_to_game():
     wantedClass = 'xmflrtmxj'
     hwnd = win32gui.FindWindow(wantedClass, None)
@@ -72,53 +65,6 @@ def attach_to_game():
     else:
         print('Can\'t find LifeTO instance')
 
-
-def send_keys_unfocused():
-    hwndMain = win32gui.FindWindow('xmflrtmxj', None)
-    tx, ty = 50, 50
-
-    while (True):
-        # [hwndChild] this is the Unique ID of the sub/child application/proccess
-        # [win32con.WM_CHAR] This sets what PostMessage Expects for input theres KeyDown and KeyUp as well
-        # [0x44] hex code for D
-        # [0]No clue, good luck!
-        # temp = win32api.PostMessage(hwndChild, win32con.WM_CHAR, 0x44, 0) returns key sent
-        lParam = win32api.MAKELONG(10, 300)
-        win32api.PostMessage(hwndMain, win32con.WM_LBUTTONDOWN,
-                             win32con.MK_LBUTTON, lParam)
-        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(tx), int(ty), 0, 0)
-        time.sleep(3)
-        print('Clicked')
-
-
-def set_game_cursor(x, y):
-    return
-
-
-def PostMessage_win32():
-    # This works
-    GAME_BASE_ADDRESS = get_base_address()
-    hwndMain = win32gui.FindWindow('xmflrtmxj', None)
-    lParam = win32api.MAKELONG(10, 11)
-    win32api.PostMessage(hwndMain, win32con.WM_KEYDOWN, 0x32, 0)
-    # win32gui.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONUP, None, lParam)
-    win32api.PostMessage(hwndMain, win32con.WM_KEYUP, 0, 0)
-    return
-
-
-def SendMessage_win32():
-    GAME_BASE_ADDRESS = get_base_address()
-    hwndMain = win32gui.FindWindow('xmflrtmxj', None)
-    lParam = win32api.MAKELONG(10, 11)
-    win32api.SendMessage(hwndMain, win32con.WM_KEYDOWN, 0x74, lParam)
-    # win32gui.SendMessage(hwnd_from_win32, win32con.WM_LBUTTONUP, None, lParam)
-    win32api.SendMessage(hwndMain, win32con.WM_KEYUP, None, lParam)
-    return
-    # hwndMain = attach_to_game()
-# send_keys_unfocused()
-# test_ctypes()
-# set_game_cursor(100, 100)
-# to_bot = Trickster_Bot()
 
 # 0x00A94B0C - general npc
 # Buy/Sell button = (x1, y1) = (x0 - 120, y0)

@@ -23,6 +23,8 @@ hwndMain = win32gui.FindWindow('xmflrtmxj', None)
 # Get the handle of the window you want to send mouse events to
 hwndSendMouseEventsTo = win32gui.FindWindow(None, "LifeTO")
 
+trickster_bot = Trickster_Bot(game_handle_pymem)
+
 
 def calculate_angle(playerX, playerY, centerX=MAX_COR[0] / 2,
                     centerY=MAX_COR[1] / 2):
@@ -35,9 +37,6 @@ def calculate_angle(playerX, playerY, centerX=MAX_COR[0] / 2,
     angle = np.arccos(dot_product)
 
     return angle
-
-
-trickster_bot = Trickster_Bot(game_handle_pymem)
 
 
 def mouse_click(hwndParam=''):
@@ -516,11 +515,6 @@ def quit_program():
     is_quit = True
 
 
-def pickup():
-    pyautogui.press('num0')
-    sleep(0.5)
-
-
 def use_skill(key):
     x0, y0 = trickster_bot.get_skill_slot_coord()
     skill_slot_x = [x0, x0 + 32]
@@ -541,8 +535,22 @@ def use_skill(key):
 
 
 def drink_potion(key):
-    pydirectinput.press(key)
-    sleep(0.5)
+    x0, y0 = trickster_bot.get_skill_slot_coord()
+    skill_slot_x = [x0, x0 + 32]
+    skill_slot_y = [y0 + i * 32 for i in range(4)]
+    skill_slot_coords = [(x, y) for y in skill_slot_y for x in skill_slot_x]
+    skill_slot_lookup = {}
+    for i in range(1, 9):
+        skill_slot_lookup[i] = skill_slot_coords[i - 1]
+        skill_slot_lookup[str(i)] = skill_slot_coords[i - 1]
+
+    trickster_bot.set_cursor(skill_slot_lookup[key][0],
+                             skill_slot_lookup[key][1])
+
+    print(f'Drink potion at {key}')
+    doubleClick(skill_slot_lookup[key][0], skill_slot_lookup[key][1])
+    doubleClick(skill_slot_lookup[key][0], skill_slot_lookup[key][1])
+    time.sleep(1)
 
 
 def heal_mana(key, percentage: int):
@@ -765,12 +773,6 @@ def test7_sell5thingsinetc():
             trickster_bot.get_number_of_items_in_inventory_tabs()
     print(f'Number of items in Etc tab after selling is '
           f'{number_of_items_etc_tab_after_selling}. Stopping auto....')
-
-
-def test8():
-    global hwndMain
-    print('----- Test 8 -----')
-    use_skill('1')
 
 
 if __name__ == '__main__':
